@@ -10,23 +10,6 @@ import { fetchBigCity, fetchCildCity, fetchMapGaguer } from '../../api';
 
 // console.disableYellowBox = true;
 
-/* 
-* 관심	0 ≤ P ＜ 55
-* 주의	55 ≤ P ＜ 71
-* 경고	71 ≤ P ＜ 86
-* 위험	86 ≤ P ≤ 100 
-*/
- {/* <View style={{flex:1,marginTop:20 ,flexDirection:'row',  alignItems:'center', justifyContent:'center'}}>
-                    <Image style={styles.tinyLogo} source={{uri:'https://cdn-icons-png.flaticon.com/512/3143/3143643.png'}}/>
-
-                    <Image style={styles.tinyLogo} source={{uri:'https://cdn-icons.flaticon.com/png/512/2821/premium/2821805.png?token=exp=1659260580~hmac=00de98802ca763e95a0230bcbc30d03d'}}/>
-               </View>
-               <View style={{flex:1, marginTop:20,flexDirection:'row', backgroundColor:'red', alignItems:'center', justifyContent:'center'}}>
-                    <Text>
-                       고기
-                    </Text>
-               </View> */}
-
 const DATA = [
     {
         id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',

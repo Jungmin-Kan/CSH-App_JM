@@ -2,11 +2,11 @@
 // const IP = 'http://127.0.0.1';
 // const IP = 'http://172.26.126.163';
 // const PORT = ':3000';
-const IP = 'http://172.26.122.52';
-const PORT = ':8000';
+const IP = 'http://192.168.0.59';
+const PORT = ':3000';
 
 
-const NOTIFICATION = `http://172.26.126.163:3000/User`;
+const NOTIFICATION = `http://192.168.0.59:3001/User`;
 
 
   export const userPush = () =>{

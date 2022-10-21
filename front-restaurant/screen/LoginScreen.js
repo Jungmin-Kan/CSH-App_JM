@@ -18,11 +18,9 @@ import * as Device from 'expo-device';
 import { registerToken } from '../api';
 
 
-
-
 /**
- * @expalin token 생성 및 서버에 토큰 등록
- * @returns 
+ * @description token 생성 및 서버에 토큰 등록
+ * @returns {string}
  */
 async function registerForPushNotificationsAsync() {
   let token;
@@ -65,7 +63,8 @@ class LoginView extends Component {
       email: '',
       password: '',
       forgot: false,
-      status: {}
+      status: {},
+      setExpoPushToken : ''
     }
   }
   video = React.createRef(null);
@@ -118,7 +117,7 @@ class LoginView extends Component {
         </View>
 
         <TouchableHighlight style={[styles.buttonContainer, styles.loginButton]} onPress={() => {
-          registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+          registerForPushNotificationsAsync().then(token => this.setState({ setExpoPushToken:token }));
           this.props.navigation.navigate('RestaurantMainScreen');
         }}>
           <Text style={styles.loginText}>로그인</Text>

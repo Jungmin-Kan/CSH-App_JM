@@ -1,13 +1,12 @@
-const TEST_ENDPOINT = `http://172.26.122.52:8000/`;
-// const NOTIFICATION = `http://34.168.19.115:3000/Restaurant`;
-const NOTIFICATION = `http://172.26.126.163:3000/Restaurant`;
+const TEST_ENDPOINT = `http://192.168.0.59:8000/`;
+const NOTIFICATION = `http://192.168.0.59:3001/Restaurant`;
 
 
-export const getInventory = (value) =>{
+export const getInventory = (value) => {
   return fetch(`${TEST_ENDPOINT}get_inventory`, {
-      method: 'GET',
-      body: JSON.stringify(value),
-    }).then((response) => response.json());
+    method: 'GET',
+    body: JSON.stringify(value),
+  }).then((response) => response.json());
 }
 
 /**
@@ -15,17 +14,17 @@ export const getInventory = (value) =>{
  * @param {*} value 
  * @returns 
  */
-export const enrollInventory = (value) =>{
-    console.log(JSON.stringify(value))
-    return fetch(`${TEST_ENDPOINT}enroll_inventory`, {
-        method: 'POST',
-        mode: 'cors', // no-cors, *cors, same-origin
-        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(value),
-      }).then((response) => response.json());
+export const enrollInventory = (value) => {
+  console.log(JSON.stringify(value))
+  return fetch(`${TEST_ENDPOINT}enroll_inventory`, {
+    method: 'POST',
+    mode: 'cors', // no-cors, *cors, same-origin
+    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(value),
+  }).then((response) => response.json());
 }
 
 
@@ -33,28 +32,71 @@ export const enrollInventory = (value) =>{
 /**
  * 푸쉬알링용 토큰 등록
  * @param {*} token 
- * @returns 
+ * @returns {Promise}
  */
-export const registerToken = (token) =>{
-    return fetch(NOTIFICATION,{
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          token: {
-            value: token,
-          }
-        }),
-      }).then((response) => response.text());
+export const registerToken = (token, id) => {
+  return fetch(NOTIFICATION, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      token: token,
+      id: id
+    }),
+  }).then((response) => response.text());
+}
+
+/**
+ * @description '메시지 요청 api'
+ * @param {object} value 
+ * @param {string} message 
+ * @returns {Promise}
+ */
+export const requestMessage = (value, message) => {
+  return fetch(NOTIFICATION, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      token: value.token,
+      id: value.id,
+      message: message
+    }),
+  }).then((response) => response.text());
+}
+
+/**
+ * @see https://stackoverflow.com/questions/44552073/upload-video-in-react-native
+ * @description 비디오파일 전송(원격 검사 데이터)
+ * @param {obejct} video 
+ * @returns {Promise}
+ */
+export const sendVideo = (video) => {
+  let formData = new FormData();
+  formData.append("videoFile", {
+    name: "name.mp4",  // 메뉴얼번호_검사날짜_사용자아이디
+    uri: video.uri,
+    type: 'video/quicktime' // mime/type
+  });
+  return fetch(`http://192.168.0.59:3001/File/`, {
+    method: 'POST',
+    body: formData,
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'multipart/form-data',
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => data);
 }
 
 
-export const restPush = () =>{
-  // return fetch(`${TEST_ENDPOINT}reset-push`, {
-  // }).then((response) => response.json());
+export const restPush = () => {
   return fetch(`${TEST_ENDPOINT}rest-push`)
-  .then((response) => response.json())
-  .then((data) => data);
+    .then((response) => response.json())
+    .then((data) => data);
 }
