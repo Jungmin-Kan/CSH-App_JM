@@ -32,6 +32,59 @@ Running the project is as simple as running
 expo start start
 ```
 
+# 제목 없음
+
+## 필수 수정사항
+
+react-native-speedometer 모듈 하위 파일  Speedometer 객체 아래와 같이 수정할 것.
+
+대상파일
+
+- react-native-speedometer.cjs.js
+- react-native-speedometer.esm.js
+- react-native-speedometer.js
+
+```jsx
+Speedometer.defaultProps = {
+  defaultValue: 50,
+  minValue: 0,
+  maxValue: 100,
+  easeDuration: 500,
+  allowedDecimals: 0,
+  labels: [{
+    name: '관심',
+        labelColor: '#00ff6b',
+            activeBarColor: '#00ff6b'
+},
+{
+    name: '주의',
+        labelColor: '#14eb6e',
+            activeBarColor: '#14eb6e'
+},
+{
+    name: '경고',
+        labelColor: '#f4ab44',
+            activeBarColor: '#f4ab44'
+},
+{
+    name: '위험',
+        labelColor: '#ff2900',
+            activeBarColor: '#ff2900'
+}],
+  needleImage: require('../images/speedometer-needle.png'),
+  wrapperStyle: {},
+  outerCircleStyle: {},
+  halfCircleStyle: {},
+  imageWrapperStyle: {},
+  imageStyle: {},
+  innerCircleStyle: {},
+  labelWrapperStyle: {},
+  labelStyle: {},
+  labelNoteStyle: {},
+  useNativeDriver: true
+};
+```
+
 
 
 ## 📚 NotificationServer
@@ -54,7 +107,7 @@ yarn install
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3001](http://localhost:3001) with your browser to see the result.
 
 
 ## 📚 front-restaurant

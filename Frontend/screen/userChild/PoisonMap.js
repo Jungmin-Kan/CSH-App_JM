@@ -206,22 +206,13 @@ const PoisonMap = () => {
                 showsUserLocation={true}
                 loadingEnabled={true}
                 style={styles.map} region={{
-                    latitude: 127,
-                    longitude: 37,
-                    latitudeDelta: 10.04,
-                    longitudeDelta: 10.05,
-                    // latitude: location.latitude,
-                    // longitude: location.longitude,
-                    // latitudeDelta: 3,
-                    // longitudeDelta: 3,
+                    latitude: location.latitude,
+                    longitude: location.longitude,
+                    latitudeDelta: 6,
+                    longitudeDelta: 6,
                 }}>
                 <GeoGen modal={onOpen} setSendLocation={setSendLocation} />
-                {/* <Marker coordinate={{
-                    latitude:37.4979502,
-                    longitude:127.0276368
-                }}>
-                <Text style={{backgroundColor:'white',width:100,height:100, borderRadius:50, textAlign:'center',justifyContent:'center'}}>hello world</Text>
-                </Marker> */}
+                {/* <Marker coordinate={{ latitude:37.4979502,longitude:127.0276368 }}><Text style={{backgroundColor:'white',width:100,height:100, borderRadius:50, textAlign:'center',justifyContent:'center'}}>hello world</Text></Marker> */}
             </MapView>
             <Modalize modalHeight={400} snapPoint={300} ref={modalizeRef}>
                 <View style={{ flex: 1 }}>
