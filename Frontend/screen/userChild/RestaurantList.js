@@ -1,12 +1,14 @@
 import React, { useState, useEffect, memo, useCallback } from 'react';
 import { StyleSheet, SafeAreaView, StatusBar, ActivityIndicator, View, FlatList, TouchableOpacity } from 'react-native';
-import { Card, Avatar, Paragraph, Text, Button, Title, Searchbar,Snackbar } from 'react-native-paper';
+import { Card, Avatar, Paragraph, Text, Button, Title, Searchbar, Snackbar } from 'react-native-paper';
 import * as Location from 'expo-location';
 import { fetchUser, userPush } from '../../api';
-
 import * as Linking from 'expo-linking';
+console.disableYellowBox = true;
 
-// console.disableYellowBox = true;
+
+const menuSeparator = () => { return <View style={{ height: 10, }}></View> }
+
 
 const Item = memo(({ title, address }) => {
   /* 인가번호 상호 주소 메인메뉴 지정일자 인허가연도 */
@@ -61,58 +63,76 @@ const Item = memo(({ title, address }) => {
   );
 });
 
-const menuSeparator = () => { return <View style={{ height: 10, }}></View> }
-
-const renderItem = ({ index, item }) => (<Item title={item.title} address={item.address} />);
-
 const RestaurantList = () => {
-  const [list, setList] = useState([{
-    "address": "강원도 원주시 우산동 90-4",
-    "title": "청솔식당",
-  }, {
-    "address": "강원도 원주시 중앙로 46",
-    "title": "민생회관",
-  }, {
-    "address": "강원도 원주시 장미공원길 74 (단계동)",
-    "title": "영월장칼국수",
-  }, {
-    "address": "강원도 원주시 중평길 59 (평원동)",
-    "title": "무궁화집",
-  }]);
-  const [buf, setBuf] = useState([]);
-  const [myloc, setMyloc] = useState({});
-  const [searchQuery, setSearchQuery] = useState('');
+  const [search, setSearch] = useState('');
+  const [filteredDataSource, setFilteredDataSource] = useState([]);
+  const [masterDataSource, setMasterDataSource] = useState([]);
 
   const [message, setMessage] = useState('')
+
   const [visibles, setVisibles] = useState(false);
-  const onToggleSnackBar = () => setVisibles(!visibles);
   const onDismissSnackBar = () => setVisibles(false);
 
   useEffect(() => {
-    setLocation();
     _dsa();
+    setLocation();
+    // fetch('https://jsonplaceholder.typicode.com/posts')
+    //   .then((response) => response.json())
+    //   .then((responseJson) => {
+    //     // setFilteredDataSource(responseJson);
+    //     // setMasterDataSource(responseJson);
+    //     setFilteredDataSource([{
+    //       "address": "강원도 원주시 우산동 90-4",
+    //       "title": "청솔식당",
+    //     }, {
+    //       "address": "강원도 원주시 중앙로 46",
+    //       "title": "민생회관",
+    //     }, {
+    //       "address": "강원도 원주시 장미공원길 74 (단계동)",
+    //       "title": "영월장칼국수",
+    //     }, {
+    //       "address": "강원도 원주시 중평길 59 (평원동)",
+    //       "title": "무궁화집",
+    //     }]);
+    //     setMasterDataSource([{
+    //       "address": "강원도 원주시 우산동 90-4",
+    //       "title": "청솔식당",
+    //     }, {
+    //       "address": "강원도 원주시 중앙로 46",
+    //       "title": "민생회관",
+    //     }, {
+    //       "address": "강원도 원주시 장미공원길 74 (단계동)",
+    //       "title": "영월장칼국수",
+    //     }, {
+    //       "address": "강원도 원주시 중평길 59 (평원동)",
+    //       "title": "무궁화집",
+    //     }]);
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //   });
     return () => { }
   }, []);
+
+
   const setLocation = async () => {
     let setLoc = "";
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    let _error = '';
-    if (status !== 'granted') { _error = '위치 권한을 허용해주세요.'; }
+    // let { status } = await Location.requestForegroundPermissionsAsync();
+    // let _error = '';
+    // if (status !== 'granted') { _error = '위치 권한을 허용해주세요.'; }
 
-    let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.BestForNavigation });
-    const { latitude, longitude } = location;
-    let geocode = await Location.reverseGeocodeAsync({ latitude, longitude })
-    console.log(geocode);
-    geocode[0].region == "서울특별시" ? setLoc = geocode[0].district : setLoc = geocode[0].region
+    // let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.BestForNavigation });
+    // const { latitude, longitude } = location;
+    // let geocode = await Location.reverseGeocodeAsync({ latitude, longitude })
+    // console.log(geocode);
+    // geocode[0].region == "서울특별시" ? setLoc = geocode[0].district : setLoc = geocode[0].region
     setLoc = "세종특별자치시 조치원읍";
-    fetchUser(setLoc, setList, setBuf);
-    setBuf(list);
-    console.log(list);
-   
-  
+    fetchUser(setLoc, setFilteredDataSource, setMasterDataSource);
   }
 
-  const _dsa = async()=>{
+
+
+  const _dsa = async () => {
     let res = await userPush();
     console.log(res);
     setMessage(res.message);
@@ -121,51 +141,63 @@ const RestaurantList = () => {
     }, 1000);
   }
 
+  const renderItem = ({ index, item }) => (<Item key={index} title={item.title}
+    address={item.address}
+  />);
 
   const searchFilterFunction = (text) => {
-    // // Check if searched text is not blank
-    // if (text) {
-    //   // Inserted text is not blank
-    //   // Filter the masterDataSource and update FilteredDataSource
-    //   const newData = list.filter(function (item) {
-    //     // Applying filter for the inserted text in search bar
-    //     return item.title.indexOf(searchQuery) > -1;
-    //   });
-    //   setList(newData);
-    //   setSearchQuery(text);
-    // } else {
-    //   // Inserted text is blank
-    //   // Update FilteredDataSource with masterDataSource
-    //   setList(buf);
-    //   setSearchQuery(text);
-    // }
+    // Check if searched text is not blank
+    if (text) {
+      // Inserted text is not blank
+      // Filter the masterDataSource and update FilteredDataSource
+      const newData = masterDataSource.filter((item) => {
+        // Applying filter for the inserted text in search bar
+        const itemData = item.title
+          ? item.title.toUpperCase()
+          : ''.toUpperCase();
+        const textData = text.toUpperCase();
+        return itemData.indexOf(textData) > -1;
+      });
+      setFilteredDataSource(newData);
+      setSearch(text);
+    } else {
+      // Inserted text is blank
+      // Update FilteredDataSource with masterDataSource
+      setFilteredDataSource(masterDataSource);
+      setSearch(text);
+    }
   };
+
+
   return (
     <SafeAreaView style={styles.container}>
-      
-
-      {/* 시 단위 */ }
-      <View style={{alignItems:'center'}}>
+      <View style={{ alignItems: 'center', flexDirection:'row', justifyContent:'center' }}>
+      <Avatar.Image size={24} style={{backgroundColor:'#ffffff'}} source={{uri:'https://www.msit.go.kr/images/user/img_mi_symbol.png'}} />
+        <Text style={{ fontSize: 20, fontWeight: 'bold', padding: 10, color: 'black' }}>모범음식점 찾기</Text>
+      </View>
+      {/* <View style={{ alignItems: 'center' }}>
         <Text style={{ fontSize: 20, fontWeight: 'bold', padding: 10 }}>모범음식점 찾기</Text>
-      </View>
-      <View style={{padding:10}}>
+      </View> */}
+
+      <View style={{ padding: 10 }}>
         <Searchbar
-        placeholder="식당이름 검색"
-        onChangeText={(text) => searchFilterFunction(text)}
-        value={searchQuery}/>
+          style={styles.textInputStyle}
+          onChangeText={(text) => searchFilterFunction(text)}
+          value={search}
+          underlineColorAndroid="transparent"
+          placeholder="Search Here"
+        />
       </View>
-  {/* <Header /> */ }
-  <View style={{ padding: 10 }}>
-    <FlatList
-      showsVerticalScrollIndicator={false}
-      ListEmptyComponent={() => <ActivityIndicator style={{ position: StyleSheet.absoluteFill, top: 200 }} size="large" color="#7FBCD2" />}
-      data={list}
-      // windowSize={2}
-      renderItem={renderItem}
-      keyExtractor={item => item.title}
-      ItemSeparatorComponent={menuSeparator} />
-  </View>
-  <Snackbar
+
+      <View>
+        <FlatList
+          data={filteredDataSource}
+          keyExtractor={(item, index) => index.toString()}
+          ItemSeparatorComponent={menuSeparator}
+          renderItem={renderItem} />
+      </View>
+
+      <Snackbar
         visible={visibles}
         onDismiss={onDismissSnackBar}
         duration={6000}
@@ -180,27 +212,23 @@ const RestaurantList = () => {
         }}>
         <TouchableOpacity onPress={onDismissSnackBar}>
           <Text style={{ fontSize: 10, fontWeight: 'bold', color: 'black', flex: 1 }} >
-       
+
             {
               ((message).length > 10) ?
-              (((message).substring(0,40)) + '...') :
-              message
+                (((message).substring(0, 40)) + '...') :
+                message
             }
           </Text></TouchableOpacity>
       </Snackbar>
-
-    </SafeAreaView >
+    </SafeAreaView>
   );
-}
-
-export default RestaurantList;
-
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: StatusBar.currentHeight || 0,
-    backgroundColor: '#B5E0F0'
+    backgroundColor: '#E4E4E409'
   },
   item: {
     backgroundColor: '#f9c2ff',
@@ -213,3 +241,6 @@ const styles = StyleSheet.create({
     fontSize: 32,
   }
 });
+
+export default RestaurantList;
+
