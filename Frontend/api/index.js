@@ -35,7 +35,6 @@ export const registerToken = (token) => {
  * @param {Array} setList
  * @returns 
  *  */
-
 export const fetchUser = (setLoc, setFilteredDataSource, setMasterDataSource) => {
   let _array = [];
   fetch(`http://192.168.0.59:3000/store_list`, {
@@ -46,16 +45,9 @@ export const fetchUser = (setLoc, setFilteredDataSource, setMasterDataSource) =>
   })
   .then(response => response.json())
   .then(data => {
-    console.log(data);
-    for (const property in data) {
-        _array.push({
-            title: property,
-            address: data[property]
-        })
-    }
+    for (const property in data) { _array.push({ title: property, address: data[property] })}
     setFilteredDataSource(_array);
     setMasterDataSource(_array);
-    console.log(_array)
   })
   .catch(error => console.log('error', error));
 

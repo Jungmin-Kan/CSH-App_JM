@@ -1,92 +1,109 @@
 const express = require('express');
 const { Expo } = require('expo-server-sdk');
 const expo = new Expo();
-let savedPushTokensUser = [];
 const router = express.Router();
 router.use(express.json());
 
-const saveToken = (type, token) => { 
-    console.log('일반 유저')
+
+/**
+ * @description 계정 풀 
+ * @type {Array.<object>}
+ */
+let savedPushTokensUser = [];
+/** 
+ * @description 메시지 풀
+ * @type {Array.<object>}
+ */
+ let notifications = [];
+/**
+ * 단말기 식별값 등록
+ * @param {*} token 단말기 토큰
+ * @param {*} id  단말기 접속 id
+ * @returns {void}
+ */
+ const saveToken = (type, token, id) => {
     if (savedPushTokensUser.indexOf(token === -1)) {
-        savedPushTokensUser.push(token);
+        savedPushTokensUser.push({ token: token, id: id });
     }
 }
 
-router.post('/', (req, res) => {
-    saveToken(false,req.body.token.value);
-    console.log(`Received push token, ${req.body.token.value}`);
-    let notifications = [];
-    for (let pushToken of savedPushTokensUser) {
-        if (!Expo.isExpoPushToken(pushToken)) {
-            console.error(`Push token ${pushToken} is not a valid Expo push token`);
-            continue;
-        }
-        notifications.push({
-            to: pushToken,
-            sound: "default",
-            title: req.body.token.value,
-            body: '유저 토큰등록이 완료되었습니다.',
-            data: {}
-        });
-    }
 
-    let chunks = expo.chunkPushNotifications(notifications);
-
-    (async () => {
-        for (let chunk of chunks) {
-            try {
-                let receipts = await expo.sendPushNotificationsAsync(chunk);
-                console.log(receipts);
-            } catch (error) {
-                console.error(error);
+/**
+ * @description 메시지 생성기
+ * @param {string} target 메시지 대상
+ * @param {string} message 전달하려는 메시지
+ */
+ const handlePushTokens = (target = '', message = 'test broadcasting') => {
+    if (target) {
+        for (let pushToken of savedPushTokensUser) {
+            if(pushToken.id == target){
+                if (!Expo.isExpoPushToken(pushToken.token)) {
+                    console.error(`Push token ${pushToken} is not a valid Expo push token`);
+                    continue;
+                }
+                notifications.push({
+                    to: pushToken.token,
+                    sound: 'default',
+                    title: `${pushToken.id}님!`,
+                    body: message,
+                    data: { message }
+                })
             }
         }
-    })();
-    res.send(`Received push token, ${req.body.token.value}`);
-});
-
-
-
-router.get('/go', (req, res) => {
-    
-    let notifications = [];
-    let pushToken;
-    for (let x of savedPushTokensUser) {
-        if (!Expo.isExpoPushToken(x)) {
-            console.error(`Push token ${x} is not a valid Expo push token`);
-            continue;
-        }
-        pushToken = x;
-        notifications.push({
-            to: x,
-            sound: "default",
-            title: pushToken + '님',
-            body: '새로운 메시지.',
-            data: {}
-        });
-    }
-
-    let chunks = expo.chunkPushNotifications(notifications);
-
-    (async () => {
-        for (let chunk of chunks) {
-            try {
-                let receipts = await expo.sendPushNotificationsAsync(chunk);
-                console.log(receipts);
-            } catch (error) {
-                console.error(error);
+    } else {
+        for (let pushToken of savedPushTokensUser) {
+            if (!Expo.isExpoPushToken(pushToken.token)) {
+                console.error(`Push token ${pushToken} is not a valid Expo push token`);
+                continue;
             }
+            notifications.push({
+                to: pushToken.token,
+                sound: 'default',
+                title: `${pushToken.id}님!`,
+                body: message,
+                data: { message }
+            })
         }
-    })();
-    res.send(`유저 푸쉬 메시지 전송 ${pushToken}`);
+    }
+}
+
+/**
+ * 다말기 명단
+ */
+ router.get('/list', (req, res) => {
+    res.json(savedPushTokensUser);
+});
+
+/**
+ * 단말기 접속 했을 경우 메시징 서버에 단말기 등록
+ */
+router.post('/', async (req, res) => {
+    saveToken(req.body.token, req.body.id);
+    console.log(`Received push token, ${req.body}`);
+    res.send(`Received push token, ${req.body}`);
 });
 
 
-router.post('/message', (req, res) => {
-    handlePushTokens(req.body.message);
-    console.log(`Received message, ${req.body.message}`);
-    res.send(`Received message, ${req.body.message}`);
+/**
+ * 앱 스크린 별 메시지 요청
+ */
+router.post('/message', async(req, res) => {
+    handlePushTokens(req.body.id, req.body.message);
+    let chunks = expo.chunkPushNotifications(notifications);
+    for (let chunk of chunks) {
+        try {
+            console.log(chunk);
+            let receipts = await expo.sendPushNotificationsAsync(chunk);
+            console.log(receipts);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+    setTimeout(() => {
+        notifications.splice(0);
+        console.log(`Received message, ${req.body}`);
+        res.send(`Received message, ${req.body}`);
+    }, 1000);
 });
-
 
 module.exports = router;
