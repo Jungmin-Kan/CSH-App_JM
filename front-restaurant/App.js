@@ -41,8 +41,6 @@ Notifications.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK);
 SplashScreen.preventAutoHideAsync().then(result => console.log(`SplashScreen.preventAutoHideAsync() succeeded: ${result}`)).catch(console.warn);
 const App = () => {
   // 푸쉬알림
-  const [expoPushToken, setExpoPushToken] = useState('');
-  const [notification, setNotification] = useState(false);
   const notificationListener = useRef();
   const responseListener = useRef();
 
@@ -63,9 +61,7 @@ const App = () => {
       }
       console.log(notification.request.content.body);
     });
-
     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => { console.log(`addNotificationResponseReceivedListener`)});
-
     return () => {
       Notifications.removeNotificationSubscription(notificationListener.current);
       Notifications.removeNotificationSubscription(responseListener.current);

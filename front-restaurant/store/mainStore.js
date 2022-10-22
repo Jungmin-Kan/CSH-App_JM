@@ -18,8 +18,15 @@ const initialState = {
 		isVisible:false,
 		content : ''
 	},
-	isLogin : false,
 	inventory : [],
+	/**
+	 * @description 푸쉬알림을 위한 사용자 식별 정보
+	 * @type {object}
+	 */
+	userInfo : {
+		id : '',
+		token : ''
+	}
 }
 
 //상태 값 변경을 위한 리듀서

@@ -19,10 +19,26 @@ import { registerToken } from '../api';
 
 
 /**
+ * @description 랜덤 문자열 반환
+ * @param {*} num 문자열 범위
+ * @returns {string}
+ */
+const generateRandomString = (num = 20) => {
+  const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  let result = '';
+  const charactersLength = characters.length;
+  for (let i = 0; i < num; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
+
+/**
  * @description token 생성 및 서버에 토큰 등록
  * @returns {string}
  */
-async function registerForPushNotificationsAsync() {
+const registerForPushNotificationsAsync = async() => {
   let token;
 
   if (Platform.OS === 'android') {
@@ -46,9 +62,7 @@ async function registerForPushNotificationsAsync() {
     }
     token = (await Notifications.getExpoPushTokenAsync()).data;
     try {
-      let res = await registerToken(token);
-      // console.log(res)
-      // alert(res);
+      let res = await registerToken(token, generateRandomString());
     } catch (error) { }
   } else {
     alert('Must use physical device for Push Notifications');
@@ -69,10 +83,11 @@ class LoginView extends Component {
   }
   video = React.createRef(null);
 
+  componentDidMount(){}
+  componentDidUpdate(){}
+  componentWillUnmount(){}
 
-  onClickListener = (viewId) => {
-    Alert.alert("Alert", "아직 준비중입니다" + viewId);
-  }
+  onClickListener = (viewId) => { Alert.alert("Alert", "아직 준비중입니다" + viewId);}
 
   render() {
     return (
@@ -80,17 +95,13 @@ class LoginView extends Component {
         <Video
           ref={this.video}
           style={[styles.video, { width: '100%', height: '100%', position: 'absolute' }]}
-          source={{
-            uri: 'https://assets.mixkit.co/videos/preview/mixkit-cracking-eggs-in-a-bowl-43011-large.mp4',
-          }}
+          source={{ uri: 'https://assets.mixkit.co/videos/preview/mixkit-cracking-eggs-in-a-bowl-43011-large.mp4',}}
           shouldPlay={true}
           useNativeControls={false}
           resizeMode='stretch'
           isLooping
           onPlaybackStatusUpdate={() => {
-            this.setState({
-              status: this.state.status
-            })
+            this.setState({ status: this.state.status })
           }}
         />
         <View style={{ alignItems: 'center', padding: 30 }}>
@@ -127,9 +138,7 @@ class LoginView extends Component {
           <Text style={{ color: '#ffffff' }}>비밀번호 찾기</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.buttonContainer]} onPress={async() => {
-          this.props.navigation.navigate('SignUpScreen')
-        }}>
+        <TouchableOpacity style={[styles.buttonContainer]} onPress={async() => { this.props.navigation.navigate('SignUpScreen')}}>
           <Text style={{ color: '#ffffff' }}>회원가입</Text>
         </TouchableOpacity>
       </View>

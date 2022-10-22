@@ -28,7 +28,7 @@ let notifications = [];
  * @param {*} id  단말기 접속 id
  * @returns {void}
  */
-const saveToken = (type, token, id) => {
+const saveToken = ( token, id) => {
     if (savedPushTokensRestaurant.indexOf(token === -1)) {
         savedPushTokensRestaurant.push({ token: token, id: id });
     }
@@ -101,15 +101,13 @@ router.post('/message', async(req, res) => {
             console.log(chunk);
             let receipts = await expo.sendPushNotificationsAsync(chunk);
             console.log(receipts);
+            notifications.splice(0);
         } catch (error) {
             console.error(error);
         }
     }
-    setTimeout(() => {
-        notifications.splice(0);
-        console.log(`Received message, ${req.body}`);
-        res.send(`Received message, ${req.body}`);
-    }, 1000);
+    console.log(notifications);
+    res.send('ok');
 });
 
 module.exports = router;

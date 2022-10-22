@@ -14,6 +14,31 @@
 - 식중동 위험알리미 지도
   - 지역별 식중독 지수, 식재료 정보  
 
+
+### Structures
+
+```text
+app/
+├─ api
+├─ assets
+├─ dummy (사용안함)
+│  └─ index.js
+├─ navigator
+├─ screen
+│  └─ userChild
+│  │  └─PoisonMap.js
+│  │  RestaurantList.js
+│  └─ HomeScreen.js
+│  └─ UserMainScreen.js
+├─ store
+├─ App.js
+├─ app.json
+├─ babel.config.js
+.
+.
+.
+```
+
 ### INSTALL
 
 ```
@@ -31,8 +56,6 @@ Running the project is as simple as running
 ```sh
 expo start start
 ```
-
-# 제목 없음
 
 ## 필수 수정사항
 
