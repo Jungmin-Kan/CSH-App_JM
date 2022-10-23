@@ -1,12 +1,7 @@
-// const IP = 'http://192.168.55.188';
-// const IP = 'http://127.0.0.1';
-// const IP = 'http://172.26.126.163';
-// const PORT = ':3000';
-const IP = 'http://192.168.0.59';
+const IP = 'http://192.168.1.187';
 const PORT = ':3000';
 
-const NOTIFICATION = `http://192.168.0.59:3001/User`;
-
+const NOTIFICATION = `http://192.168.1.187:3001/User`;
 
 export const userPush = () => {
   return fetch(`${IP}${PORT}/user-push`)
@@ -14,7 +9,7 @@ export const userPush = () => {
     .then((data) => data);
 }
 
-export const registerToken = (token) => {
+export const registerToken = (token, id) => {
   return fetch(NOTIFICATION, {
     method: 'POST',
     headers: {
@@ -22,9 +17,8 @@ export const registerToken = (token) => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      token: {
-        value: token,
-      }
+      token: token,
+      id: id
     }),
   }).then((response) => response.text());
 }
@@ -37,7 +31,7 @@ export const registerToken = (token) => {
  *  */
 export const fetchUser = (setLoc, setFilteredDataSource, setMasterDataSource) => {
   let _array = [];
-  fetch(`http://192.168.0.59:3000/store_list`, {
+  fetch(`http://192.168.1.187:3000/store_list`, {
     method: 'POST',
     headers: { "Content-Type" : "application/json"},
     body: JSON.stringify({ "location": setLoc }),
@@ -90,7 +84,7 @@ export const fetchCildCity = (sendLocation, setChildList) => {
 export const fetchMapGaguer = (geo, setGage, day, setVirus = '', setWarningFood) => {
   // "tomorrow","afterTomorrow"
   //  {fp_score : 12, fp_bst_virus: '',danger_food_lst: []}
-  geo = '서울시'
+  geo = '서울시';
   let GAGERURL = `${IP}${PORT}/fpsirenMy?userCityName=${geo}&day=${day}`;
   fetch(GAGERURL)
     .then((response) => response.json())
@@ -134,31 +128,31 @@ export const fetchBigCity = () => {
 }
 
 
-export const findImgApi = (title, setImg) => {
-  fetch("https://www.mangoplate.com/search/%EB%AC%B4%EB%B4%89%EB%A6%AC%ED%86%A0%EC%A2%85%EC%88%9C%EB%8C%80%EA%B5%AD", {
-    "headers": {
-      "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-      "accept-language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
-      "cache-control": "max-age=0",
-      "if-none-match": "W/\"5b4070dfa8b24bfb567234794563264b\"",
-      "sec-ch-ua": "\"Google Chrome\";v=\"105\", \"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"105\"",
-      "sec-ch-ua-mobile": "?0",
-      "sec-ch-ua-platform": "\"macOS\"",
-      "sec-fetch-dest": "document",
-      "sec-fetch-mode": "navigate",
-      "sec-fetch-site": "same-origin",
-      "sec-fetch-user": "?1",
-      "upgrade-insecure-requests": "1"
-    },
-    "referrer": "https://www.mangoplate.com/",
-    "referrerPolicy": "strict-origin-when-cross-origin",
-    "body": null,
-    "method": "GET",
-    "mode": "cors",
-    "credentials": "include"
-  }).then((response) => response.text())
-    .then(data => {
-      console.log(data);
+// export const findImgApi = (title, setImg) => {
+//   fetch("https://www.mangoplate.com/search/%EB%AC%B4%EB%B4%89%EB%A6%AC%ED%86%A0%EC%A2%85%EC%88%9C%EB%8C%80%EA%B5%AD", {
+//     "headers": {
+//       "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+//       "accept-language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
+//       "cache-control": "max-age=0",
+//       "if-none-match": "W/\"5b4070dfa8b24bfb567234794563264b\"",
+//       "sec-ch-ua": "\"Google Chrome\";v=\"105\", \"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"105\"",
+//       "sec-ch-ua-mobile": "?0",
+//       "sec-ch-ua-platform": "\"macOS\"",
+//       "sec-fetch-dest": "document",
+//       "sec-fetch-mode": "navigate",
+//       "sec-fetch-site": "same-origin",
+//       "sec-fetch-user": "?1",
+//       "upgrade-insecure-requests": "1"
+//     },
+//     "referrer": "https://www.mangoplate.com/",
+//     "referrerPolicy": "strict-origin-when-cross-origin",
+//     "body": null,
+//     "method": "GET",
+//     "mode": "cors",
+//     "credentials": "include"
+//   }).then((response) => response.text())
+//     .then(data => {
+//       console.log(data);
 
-    }).catch(e => console.log(e));
-}
+//     }).catch(e => console.log(e));
+// }

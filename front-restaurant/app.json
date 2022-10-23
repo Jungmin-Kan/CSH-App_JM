@@ -26,6 +26,7 @@
         "foregroundImage": "./assets/icon4.png",
         "backgroundColor": "#FFFFFF"
       },
+      "useNextNotificationsApi": true,
       "package": "com.csh.restautant"
     },
     "web": {

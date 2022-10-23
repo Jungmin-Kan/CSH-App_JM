@@ -14,9 +14,7 @@ const UserStack = () => {
     <Tab.Navigator screenOptions={() => ({
         tabBarInactiveTintColor: 'grey',  //선택 안되어 있을때 색
         tabBarActiveTintColor: '#0085ea', //선택 되어 있을때 색
-        tabBarStyle: {
-            display: 'flex',
-        },
+        tabBarStyle: { display: 'flex',},
     })}>
       <Tab.Screen name="모범음식점" component={RestaurantList} options={({ route, navigation }) => ({
                     headerShown: false,

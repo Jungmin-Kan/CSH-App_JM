@@ -9,7 +9,7 @@
 import { Provider as PaperProvider } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
 import MainStack from './navigator/MainStack'
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef,useState } from 'react';
 import { Provider } from 'react-redux';
 import store from './store/store';
 import * as SplashScreen from 'expo-splash-screen';
@@ -17,6 +17,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 import * as TaskManager from 'expo-task-manager';
+import { registerToken } from './api';
 
 SplashScreen.preventAutoHideAsync().then(result => console.log(`SplashScreen.preventAutoHideAsync() succeeded: ${result}`)).catch(console.warn);
 console.disableYellowBox = true;
@@ -47,10 +48,26 @@ Notifications.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK);
 
 
 /**
+ * @description 랜덤 문자열 반환
+ * @param {*} num 문자열 범위
+ * @returns {string}
+ */
+ const generateRandomString = (num = 20) => {
+  const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  let result = '';
+  const charactersLength = characters.length;
+  for (let i = 0; i < num; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
+
+/**
  * @expalin token 생성 및 서버에 토큰 등록
  * @returns 
  */
-async function registerForPushNotificationsAsync() {
+const registerForPushNotificationsAsync = async() => {
   let token;
 
   if (Platform.OS === 'android') {
@@ -75,7 +92,7 @@ async function registerForPushNotificationsAsync() {
     }
     token = (await Notifications.getExpoPushTokenAsync()).data;
     try {
-      let res = await registerToken(token);
+      let res = await registerToken(token, generateRandomString());
       console.log(res)
     } catch (error) { }
   } else {
@@ -88,11 +105,12 @@ async function registerForPushNotificationsAsync() {
 const App = () => {
   const notificationListener = useRef();
   const responseListener = useRef();
+  const [ExpoPushToken,setExpoPushToken] = useState('');
 
   useEffect(() => {
     // Hides native splash screen after 2s
     setTimeout(async () => { await SplashScreen.hideAsync();}, 2000);
-   
+ 
     registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
       // setNotification(notification);

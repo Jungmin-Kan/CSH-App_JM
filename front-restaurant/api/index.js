@@ -1,5 +1,5 @@
 const TEST_ENDPOINT = `http://192.168.0.59:8000/`;
-const NOTIFICATION = `http://192.168.0.59:3001/Restaurant`;
+const NOTIFICATION = `http://192.168.1.187:3001/Restaurant`;
 
 
 export const getInventory = (value) => {
@@ -82,7 +82,7 @@ export const sendVideo = (video) => {
     uri: video.uri,
     type: 'video/quicktime' // mime/type
   });
-  return fetch(`http://192.168.0.59:3001/File/`, {
+  return fetch(`http://192.168.1.187:3001/File/`, {
     method: 'POST',
     body: formData,
     headers: {

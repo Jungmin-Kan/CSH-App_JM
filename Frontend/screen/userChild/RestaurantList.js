@@ -13,7 +13,10 @@ const menuSeparator = () => { return <View style={{ height: 10, }}></View> }
 const Item = memo(({ title, address }) => {
   /* 인가번호 상호 주소 메인메뉴 지정일자 인허가연도 */
   const [destination, setDestination] = useState(``);
-  useEffect(() => { getScheme(); }, [])
+  useEffect(() => { getScheme(); }, []);
+  useEffect(()=>{
+    console.log(destination);
+  },[destination]);
   const getScheme = async () => {
     let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.BestForNavigation });
     const { latitude, longitude } = location.coords;

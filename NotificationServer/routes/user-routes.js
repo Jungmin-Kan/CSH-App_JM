@@ -1,3 +1,9 @@
+/**
+ * @title expo-server-sdk-node
+ * @see https://github.com/expo/expo-server-sdk-node
+ * AAAA93ApIrA:APA91bHScJS7qrYpaBX5DepQlq8q-OvEcO-_r2PGvvvSXVVb6HWMrsFkmI3lSNImcUm5sHoViJQ4-bAyhtTmVD6dJxvXG0PJ_1dDu_5X3y7mucsxhkgBBQbU80gSg-o6YIpuddZ9N7b7	
+ */
+
 const express = require('express');
 const { Expo } = require('expo-server-sdk');
 const expo = new Expo();
@@ -21,7 +27,7 @@ let savedPushTokensUser = [];
  * @param {*} id  단말기 접속 id
  * @returns {void}
  */
- const saveToken = (type, token, id) => {
+ const saveToken = (token, id) => {
     if (savedPushTokensUser.indexOf(token === -1)) {
         savedPushTokensUser.push({ token: token, id: id });
     }
@@ -59,7 +65,7 @@ let savedPushTokensUser = [];
             notifications.push({
                 to: pushToken.token,
                 sound: 'default',
-                title: `${pushToken.id}님!`,
+                title: `전체 메시지 ${pushToken.id}님!`,
                 body: message,
                 data: { message }
             })
@@ -95,15 +101,13 @@ router.post('/message', async(req, res) => {
             console.log(chunk);
             let receipts = await expo.sendPushNotificationsAsync(chunk);
             console.log(receipts);
+            notifications.splice(0);
         } catch (error) {
             console.error(error);
         }
     }
-    setTimeout(() => {
-        notifications.splice(0);
-        console.log(`Received message, ${req.body}`);
-        res.send(`Received message, ${req.body}`);
-    }, 1000);
+    console.log(notifications);
+    res.send('user-ok');
 });
 
 module.exports = router;

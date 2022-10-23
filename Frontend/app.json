@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "청신한(일반 사용자)",
-    "slug": "청신한(일반 사용자)",
+    "name": "청신한",
+    "slug": "front-user",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon_user.png",
@@ -21,10 +21,12 @@
       "supportsTablet": true
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon_user.png",
         "backgroundColor": "#FFFFFF"
       },
+      "useNextNotificationsApi": true,
       "package": "com.csh.user"
     },
     "web": {

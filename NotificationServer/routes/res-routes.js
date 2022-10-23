@@ -1,6 +1,7 @@
 /**
  * @title expo-server-sdk-node
  * @see https://github.com/expo/expo-server-sdk-node
+ * AAAA93ApIrA:APA91bHScJS7qrYpaBX5DepQlq8q-OvEcO-_r2PGvvvSXVVb6HWMrsFkmI3lSNImcUm5sHoViJQ4-bAyhtTmVD6dJxvXG0PJ_1dDu_5X3y7mucsxhkgBBQbU80gSg-o6YIpuddZ9N7b7	
  */
 
 const express = require('express');
@@ -65,7 +66,7 @@ const handlePushTokens = (target = '', message = 'test broadcasting') => {
             notifications.push({
                 to: pushToken.token,
                 sound: 'default',
-                title: `${pushToken.id}님!`,
+                title: `전체 메시지 ${pushToken.id}님!`,
                 body: message,
                 data: { message }
             })
@@ -107,7 +108,7 @@ router.post('/message', async(req, res) => {
         }
     }
     console.log(notifications);
-    res.send('ok');
+    res.send('res-ok');
 });
 
 module.exports = router;
