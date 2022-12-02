@@ -94,6 +94,7 @@ export const sendVideo = (video,id = 2) => {
     uri: video.uri,
     type: 'video/mp4' // mime/type
   });
+  console.log(video);
   return fetch(`${TEST_ENDPOINT}rest-fileUpload?restaurant_id=${id}`, {
     method: 'POST',
     body: formData,
