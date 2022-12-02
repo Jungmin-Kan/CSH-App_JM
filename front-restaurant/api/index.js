@@ -1,5 +1,5 @@
 const TEST_ENDPOINT = `http://cshserver.ga:8000/`;
-const NOTIFICATION = `http://172.26.126.163:3001/Restaurant`;
+const NOTIFICATION = `http://35.203.131.4:3001/Restaurant`;
 
 export const SUCCESS = `success`;
 export const FAIL = `fail`;
