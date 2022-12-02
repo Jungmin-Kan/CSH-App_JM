@@ -27,7 +27,7 @@ let upload = multer({ storage: storage }).single("videoFile")
 
 router.post('/' ,async (req, res) => {
     upload(req, res, err => {
-        console.log(req.file, req.body)
+        console.log(req.file, req.body);
         if (err) {
             return res.json({ success: false, err })
         }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, SafeAreaView, StatusBar, View, Dimensions, Text, FlatList, Image } from 'react-native';
-import { Paragraph, Card, FAB, Button, Divider } from 'react-native-paper';
+import { Paragraph, Card, FAB, Button, ActivityIndicator } from 'react-native-paper';
 import MapView, { Geojson, Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { Modalize } from 'react-native-modalize';
@@ -19,7 +19,7 @@ const DATA = [
     {
         id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
         title: '샌드위치',
-        img : 'https://cdn-icons.flaticon.com/png/512/2821/premium/2821805.png?token=exp=1659260580~hmac=00de98802ca763e95a0230bcbc30d03d'
+        img : 'https://cdn.icon-icons.com/icons2/3277/PNG/512/sandwich_bread_bikini_snack_food_icon_208027.png'
     },
     {
         id: '58694a0f-3da1-471f-bd96-145571e29d72',
@@ -164,6 +164,7 @@ const PoisonMap = () => {
     const [warningFood, setWarningFood] = useState([]);
     const modalgager = useRef(null);
     /* ***** */
+    const [indicator, setIndocator] = useState(true);
 
     useEffect(() => {
         console.log("request location param >>" + sendLocation);
@@ -199,9 +200,17 @@ const PoisonMap = () => {
             setGeo(geocode);
             console.log(geocode[0]);
         })();
+        setTimeout(() => {
+            setIndocator(false);
+        }, 3000);
     }, []);
     return (
         <SafeAreaView style={styles.container}>
+            {indicator && <View style={{backgroundColor:'#ffffff', position:'absolute', width:'100%', height:'100%',zIndex:1, alignItems:'center', justifyContent:'center'}}>
+                <ActivityIndicator animating={true} size={100} color={'#0085ea'} style={{marginBottom:100}}/>
+                <Text style={{fontSize:20, fontWeight:'bold'}}>식중독 정보 준비 중...</Text>
+            </View>}
+
             <MapView
                 showsUserLocation={true}
                 loadingEnabled={true}
@@ -226,40 +235,45 @@ const PoisonMap = () => {
                 </View>
             </Modalize>
 
-            <Modalize modalHeight={500} snapPoint={300} ref={modalgager}>
-                <View style={{flex:1}}>
-                    <RNSpeedometer value={gage} size={300} />
-                </View>
+            <Modalize modalHeight={700} snapPoint={400} ref={modalgager}>
+                <View style={{flex:1, padding:10, marginTop:10}}>
 
-                <View style={{marginTop:60,flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                    <Image style={styles.tinyLogo} source={{ uri: 'https://cdn-icons-png.flaticon.com/512/1097/1097326.png' }} />
-                    <Text style={{ marginLeft:8,fontSize: 30 }}>{virus}</Text>
-                </View>
+                    <View style={{flex:1}}>
+                        <RNSpeedometer value={gage} size={300} />
+                    </View>
 
-                <View style={{padding:8}}>
-                    <View style={{borderWidth:1, borderColor:'#e0e0e0'}}></View>
-                </View>
 
-                <View style={{ flex: 1}}>
-                    <View style={{alignItems:'center'}}><Text style={{fontSize:20, padding:10}}>주의 음식</Text></View>
-                    <FlatList
-                        showsHorizontalScrollIndicator={false}
-                        horizontal={true}
-                        data={DATA}
-                        renderItem={renderItem}
-                        keyExtractor={item => item.id} />
-                </View>
-                
-                <View style={{padding:8}}>
-                    <View style={{borderWidth:1, borderColor:'#e0e0e0'}}></View>
-                </View>
+                    <View style={{marginTop:60,flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                        <Image style={{ width: 30, height: 30,}} source={{ uri: 'https://cdn-icons-png.flaticon.com/512/1097/1097326.png' }} />
+                        <Text style={{ marginLeft:8,fontSize: 20 }}>{virus}</Text>
+                    </View>
 
-                <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                    <Button mode="contained" onPress={() => onGagerChange('today')}>오늘</Button>
-                    <Button mode="contained" style={{ marginLeft: 35 }} onPress={() => onGagerChange('tomorrow')}>내일</Button>
-                    <Button mode="contained" style={{ marginLeft: 35 }} onPress={() => onGagerChange('afterTomorrow')}>모레</Button>
+                    <View style={{padding:30}}>
+                        <View style={{borderWidth:1, borderColor:'#e0e0e0'}}></View>
+                    </View>
+
+                    <View style={{ flex: 1}}>
+                        <View style={{alignItems:'center'}}><Text style={{fontSize:20, padding:10}}>주의 음식</Text></View>
+                        <FlatList
+                            showsHorizontalScrollIndicator={false}
+                            horizontal={true}
+                            data={DATA}
+                            renderItem={renderItem}
+                            keyExtractor={item => item.id} />
+                    </View>
+                    
+                    <View style={{padding:30}}>
+                        <View style={{borderWidth:1, borderColor:'#e0e0e0'}}></View>
+                    </View>
+
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
+                        <Button mode="contained" color='#0085ea' onPress={() => onGagerChange('today')}>오늘</Button>
+                        <Button mode="contained" color='#0085ea' onPress={() => onGagerChange('tomorrow')}>내일</Button>
+                        <Button mode="contained" color='#0085ea' onPress={() => onGagerChange('afterTomorrow')}>모레</Button>
+                    </View>
                 </View>
             </Modalize>
+
             <FAB
                 icon="alert"
                 color='red'
@@ -287,7 +301,7 @@ export default PoisonMap;
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: StatusBar.currentHeight || 0,
+        // marginTop: StatusBar.currentHeight || 0,
         flex: 1,
         backgroundColor: '#fff',
         alignItems: 'center',

@@ -1,6 +1,8 @@
-const TEST_ENDPOINT = `http://192.168.0.59:8000/`;
-const NOTIFICATION = `http://192.168.1.187:3001/Restaurant`;
+const TEST_ENDPOINT = `http://cshserver.ga:8000/`;
+const NOTIFICATION = `http://172.26.126.163:3001/Restaurant`;
 
+export const SUCCESS = `success`;
+export const FAIL = `fail`;
 
 export const getInventory = (value) => {
   return fetch(`${TEST_ENDPOINT}get_inventory`, {
@@ -67,7 +69,16 @@ export const requestMessage = (value, message) => {
       message: message
     }),
   }).then((response) => response.text());
+
 }
+
+
+export const restPush = () => {
+  return fetch(`${TEST_ENDPOINT}rest-push`)
+    .then((response) => response.json())
+    .then((data) => data);
+}
+
 
 /**
  * @see https://stackoverflow.com/questions/44552073/upload-video-in-react-native
@@ -75,14 +86,15 @@ export const requestMessage = (value, message) => {
  * @param {obejct} video 
  * @returns {Promise}
  */
-export const sendVideo = (video) => {
+export const sendVideo = (video,id = 2) => {
+
   let formData = new FormData();
-  formData.append("videoFile", {
+  formData.append("video_file", {
     name: "name.mp4",  // 메뉴얼번호_검사날짜_사용자아이디
     uri: video.uri,
-    type: 'video/quicktime' // mime/type
+    type: 'video/mp4' // mime/type
   });
-  return fetch(`http://192.168.1.187:3001/File/`, {
+  return fetch(`${TEST_ENDPOINT}rest-fileUpload?restaurant_id=${id}`, {
     method: 'POST',
     body: formData,
     headers: {
@@ -94,9 +106,51 @@ export const sendVideo = (video) => {
     .then((data) => data);
 }
 
+// export const sendVideo = (video) => {
+//   let formData = new FormData();
+//   formData.append("videoFile", {
+//     name: "name.mp4",  // 메뉴얼번호_검사날짜_사용자아이디
+//     uri: video.uri,
+//     type: 'video/quicktime' // mime/type
+//   });
+//   return fetch(`http://192.168.1.187:3001/File/`, {
+//     method: 'POST',
+//     body: formData,
+//     headers: {
+//       Accept: 'application/json',
+//       'Content-Type': 'multipart/form-data',
+//     },
+//   })
+//     .then((response) => response.json())
+//     .then((data) => data);
+// }
 
-export const restPush = () => {
-  return fetch(`${TEST_ENDPOINT}rest-push`)
+
+
+// http://192.168.0.66:8000/
+// cshserver.ga:8000
+export const restLogin = (value) =>{
+  return fetch(`${TEST_ENDPOINT}rest-login`, {
+    method: 'POST',
+    body: JSON.stringify(value),
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => data);
+}
+
+export const restSignup = (value) =>{
+  return fetch(`${TEST_ENDPOINT}rest-signup`, {
+    method: 'POST',
+    body: JSON.stringify(value),
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+  })
     .then((response) => response.json())
     .then((data) => data);
 }

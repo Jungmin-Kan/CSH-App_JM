@@ -15,7 +15,8 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Video, AVPlaybackStatus } from 'expo-av';
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
-import { registerToken } from '../api';
+import { registerToken, restLogin, SUCCESS } from '../api';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 /**
@@ -24,11 +25,11 @@ import { registerToken } from '../api';
  * @returns {string}
  */
 const generateRandomString = (num = 20) => {
-  const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
   let result = '';
   const charactersLength = characters.length;
   for (let i = 0; i < num; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
 }
@@ -38,7 +39,7 @@ const generateRandomString = (num = 20) => {
  * @description token 생성 및 서버에 토큰 등록
  * @returns {string}
  */
-const registerForPushNotificationsAsync = async() => {
+const registerForPushNotificationsAsync = async (id) => {
   let token;
 
   if (Platform.OS === 'android') {
@@ -62,7 +63,8 @@ const registerForPushNotificationsAsync = async() => {
     }
     token = (await Notifications.getExpoPushTokenAsync()).data;
     try {
-      let res = await registerToken(token, generateRandomString());
+      let res = await registerToken(token, id);
+      // let res = await registerToken(token, generateRandomString());
     } catch (error) { }
   } else {
     alert('Must use physical device for Push Notifications');
@@ -74,20 +76,64 @@ class LoginView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: '',
+      bnum: '',
       password: '',
       forgot: false,
       status: {},
-      setExpoPushToken : ''
+      setExpoPushToken: ''
     }
+
   }
   video = React.createRef(null);
 
-  componentDidMount(){}
-  componentDidUpdate(){}
-  componentWillUnmount(){}
+  componentDidMount() {
+    this.getMyStringValue();
+  }
 
-  onClickListener = (viewId) => { Alert.alert("Alert", "아직 준비중입니다" + viewId);}
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.state.bnum !== prevState.bnum) {
+      console.log(this.state.bnum)
+    }
+  }
+
+  componentWillUnmount() { }
+
+  onClickListener = (viewId) => { Alert.alert("Alert", "아직 준비중입니다" + viewId) }
+
+  _resLogin = async () => {
+    // this.props.navigation.navigate('RestaurantMainScreen');
+    try {
+      let res = await restLogin({
+        bz_num: this.state.bnum,
+        password: this.state.password
+      });
+      if (res.result == SUCCESS) {
+        registerForPushNotificationsAsync(this.state.bnum).then(token => this.setState({ setExpoPushToken: token }));
+        this.props.navigation.navigate('RestaurantMainScreen');
+        this.setPushStatus(this.state.bnum, this.state.password);
+        return;
+      }
+      this.setState({ bnum: '', password: '' })
+    } catch { }
+  }
+
+  setPushStatus = async (businessNumber, passWord) => {
+    try {
+      await AsyncStorage.setItem('USERSET', JSON.stringify({
+        doNotify: false,
+        businessNumber: businessNumber,
+        passWord: passWord,
+      }));
+      console.log(value);
+    } catch (error) { }
+  }
+
+  getMyStringValue = async () => {
+    try {
+      let res =  await AsyncStorage.getItem('USERSET')
+      console.log(res);
+    } catch { }
+  }
 
   render() {
     return (
@@ -95,7 +141,7 @@ class LoginView extends Component {
         <Video
           ref={this.video}
           style={[styles.video, { width: '100%', height: '100%', position: 'absolute' }]}
-          source={{ uri: 'https://assets.mixkit.co/videos/preview/mixkit-cracking-eggs-in-a-bowl-43011-large.mp4',}}
+          source={{ uri: 'https://assets.mixkit.co/videos/preview/mixkit-cracking-eggs-in-a-bowl-43011-large.mp4', }}
           shouldPlay={true}
           useNativeControls={false}
           resizeMode='stretch'
@@ -104,41 +150,41 @@ class LoginView extends Component {
             this.setState({ status: this.state.status })
           }}
         />
+
         <View style={{ alignItems: 'center', padding: 30 }}>
           <Avatar.Image size={100} style={{ backgroundColor: '#ffffff' }} source={{ uri: 'https://www.msit.go.kr/images/user/img_mi_symbol.png' }} />
           <Text style={{ fontSize: 20, fontWeight: 'bold', padding: 10, color: '#ffffff' }}>청신한 업주용</Text>
         </View>
 
         <View style={styles.inputContainer}>
-          <MaterialCommunityIcons style={styles.inputIcon} name="email" size={24} color="black" />
+          <MaterialCommunityIcons style={styles.inputIcon} name="archive-eye" size={24} color="black" />
           <TextInput style={styles.inputs}
-            placeholder="이메일"
-            keyboardType="email-address"
+            value={this.state.bnum}
+            placeholder="사업자등록번호"
+            keyboardType="number-pad"
             underlineColorAndroid='transparent'
-            onChangeText={(email) => this.setState({ email })} />
+            onChangeText={(bnum) => this.setState({ bnum })} />
         </View>
 
         <View style={styles.inputContainer}>
           <MaterialCommunityIcons style={styles.inputIcon} name="account-lock" size={24} color="black" />
           <TextInput style={styles.inputs}
+            value={this.state.password}
             placeholder="비밀번호"
             secureTextEntry={true}
             underlineColorAndroid='transparent'
             onChangeText={(password) => this.setState({ password })} />
         </View>
 
-        <TouchableHighlight style={[styles.buttonContainer, styles.loginButton]} onPress={() => {
-          registerForPushNotificationsAsync().then(token => this.setState({ setExpoPushToken:token }));
-          this.props.navigation.navigate('RestaurantMainScreen');
-        }}>
+        <TouchableHighlight style={[styles.buttonContainer, styles.loginButton]} onPress={() => this._resLogin()}>
           <Text style={styles.loginText}>로그인</Text>
         </TouchableHighlight>
 
-        <TouchableOpacity style={[styles.buttonContainer]} onPress={() => this.onClickListener('restore_password')}>
+        {/* <TouchableOpacity style={[styles.buttonContainer]} onPress={() => this.onClickListener('restore_password')}>
           <Text style={{ color: '#ffffff' }}>비밀번호 찾기</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
-        <TouchableOpacity style={[styles.buttonContainer]} onPress={async() => { this.props.navigation.navigate('SignUpScreen')}}>
+        <TouchableOpacity style={[styles.buttonContainer]} onPress={async () => { this.props.navigation.navigate('SignUpScreen') }}>
           <Text style={{ color: '#ffffff' }}>회원가입</Text>
         </TouchableOpacity>
       </View>

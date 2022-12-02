@@ -11,6 +11,8 @@ import * as Device from 'expo-device';
 import * as TaskManager from 'expo-task-manager';
 import { registerToken } from './api';
 import { setDialogState } from './store/mainStore';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 
 
@@ -49,6 +51,16 @@ const App = () => {
     setTimeout(async () => { 
       await SplashScreen.hideAsync();
     }, 2000);
+    _NotifyInit();
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
+
+  const _NotifyInit = () =>{
+
+    getPushStatus()
     // 서버로부터 전달받은 것은 여기로 받는다.
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
       console.log(`addNotificationReceivedListener`);
@@ -61,12 +73,22 @@ const App = () => {
       }
       console.log(notification.request.content.body);
     });
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => { console.log(`addNotificationResponseReceivedListener`)});
-    return () => {
-      Notifications.removeNotificationSubscription(notificationListener.current);
-      Notifications.removeNotificationSubscription(responseListener.current);
-    };
-  }, []);
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => { console.log(`addNotificationResponseReceivedListener`)}); 
+  }
+
+  const getPushStatus = async() => {
+    try {
+      const value = await AsyncStorage.getItem('USERSET');
+      if (value == null) {
+        await AsyncStorage.setItem('USERSET',JSON.stringify({
+          doNotify: false,
+          businessNumber: '',
+          passWord : '',
+        }));
+      }
+      console.log(value);
+    } catch (error) {}
+  }
 
   return (
     <Provider store={store}>

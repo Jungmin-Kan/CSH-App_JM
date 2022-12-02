@@ -1,7 +1,7 @@
-const IP = 'http://192.168.1.187';
+const IP = 'http://172.26.126.163';
 const PORT = ':3000';
 
-const NOTIFICATION = `http://192.168.1.187:3001/User`;
+const NOTIFICATION = `http://172.26.126.163:3001/User`;
 
 export const userPush = () => {
   return fetch(`${IP}${PORT}/user-push`)
@@ -29,9 +29,9 @@ export const registerToken = (token, id) => {
  * @param {Array} setList
  * @returns 
  *  */
-export const fetchUser = (setLoc, setFilteredDataSource, setMasterDataSource) => {
+export const storeList = (setLoc, setFilteredDataSource, setMasterDataSource) => {
   let _array = [];
-  fetch(`http://192.168.1.187:3000/store_list`, {
+  fetch(`http://cshserver.ga:8000/store_list`, {
     method: 'POST',
     headers: { "Content-Type" : "application/json"},
     body: JSON.stringify({ "location": setLoc }),
@@ -58,7 +58,7 @@ export const fetchCildCity = (sendLocation, setChildList) => {
   console.log(sendLocation);
   let _array = [];
   let _count = 0;
-  let CHILD_CITY = `${IP}${PORT}/fpsiren?userCityName=${sendLocation}&day=today`;
+  let CHILD_CITY = `http://cshserver.ga:8000/fpsiren?userCityName=${sendLocation}&day=today`;
   fetch(CHILD_CITY)
     .then((response) => response.json())
     .then((data) => {
@@ -85,7 +85,7 @@ export const fetchMapGaguer = (geo, setGage, day, setVirus = '', setWarningFood)
   // "tomorrow","afterTomorrow"
   //  {fp_score : 12, fp_bst_virus: '',danger_food_lst: []}
   geo = '서울시';
-  let GAGERURL = `${IP}${PORT}/fpsirenMy?userCityName=${geo}&day=${day}`;
+  let GAGERURL = `http://cshserver.ga:8000/fpsirenMy?userCityName=${geo}&day=${day}`;
   fetch(GAGERURL)
     .then((response) => response.json())
     .then((data) => {

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, memo, useCallback } from 'react';
-import { StyleSheet, SafeAreaView, StatusBar, ActivityIndicator, View, FlatList, TouchableOpacity } from 'react-native';
-import { Card, Avatar, Paragraph, Text, Button, Title, Searchbar, Snackbar } from 'react-native-paper';
+import { StyleSheet, SafeAreaView, StatusBar, View, FlatList, TouchableOpacity } from 'react-native';
+import { Card, Avatar, Paragraph, Text, Button, Title, Searchbar, Snackbar, ActivityIndicator } from 'react-native-paper';
 import * as Location from 'expo-location';
-import { fetchUser, userPush } from '../../api';
+import { storeList, userPush } from '../../api';
 import * as Linking from 'expo-linking';
 console.disableYellowBox = true;
 
@@ -13,6 +13,7 @@ const menuSeparator = () => { return <View style={{ height: 10, }}></View> }
 const Item = memo(({ title, address }) => {
   /* 인가번호 상호 주소 메인메뉴 지정일자 인허가연도 */
   const [destination, setDestination] = useState(``);
+  const [destinationT, setDestinationT] = useState(``);
   useEffect(() => { getScheme(); }, []);
   useEffect(()=>{
     console.log(destination);
@@ -47,6 +48,7 @@ const Item = memo(({ title, address }) => {
       long = x[3];
       lat = x[4];
       setDestination(`nmap://route/car?slat=${latitude}&slng=${longitude}&sname=내위치&dlat=${lat}&dlng=${long}&dname=${address}&appname=com.example.myapp`)
+      setDestinationT(`tmap://route?goalx=${long}&goaly=${lat}&goalname=${address}"`)
     });
   };
   return (
@@ -61,6 +63,12 @@ const Item = memo(({ title, address }) => {
         <Button color='green' onPress={() => {
           Linking.openURL(destination);
         }}>네이버 지도로 이동하기</Button>
+      </Card.Actions>
+      <Card.Actions>
+        <Avatar.Image size={24} source={{ uri: 'http://assets.volvocars.co.kr/images/v/connectivity/icon-i-01.png' }} />
+        <Button color='purple' onPress={() => {
+          Linking.openURL(destinationT);
+        }}>티맵 지도로 이동하기</Button>
       </Card.Actions>
     </Card>
   );
@@ -79,60 +87,28 @@ const RestaurantList = () => {
   useEffect(() => {
     _dsa();
     setLocation();
-    // fetch('https://jsonplaceholder.typicode.com/posts')
-    //   .then((response) => response.json())
-    //   .then((responseJson) => {
-    //     // setFilteredDataSource(responseJson);
-    //     // setMasterDataSource(responseJson);
-    //     setFilteredDataSource([{
-    //       "address": "강원도 원주시 우산동 90-4",
-    //       "title": "청솔식당",
-    //     }, {
-    //       "address": "강원도 원주시 중앙로 46",
-    //       "title": "민생회관",
-    //     }, {
-    //       "address": "강원도 원주시 장미공원길 74 (단계동)",
-    //       "title": "영월장칼국수",
-    //     }, {
-    //       "address": "강원도 원주시 중평길 59 (평원동)",
-    //       "title": "무궁화집",
-    //     }]);
-    //     setMasterDataSource([{
-    //       "address": "강원도 원주시 우산동 90-4",
-    //       "title": "청솔식당",
-    //     }, {
-    //       "address": "강원도 원주시 중앙로 46",
-    //       "title": "민생회관",
-    //     }, {
-    //       "address": "강원도 원주시 장미공원길 74 (단계동)",
-    //       "title": "영월장칼국수",
-    //     }, {
-    //       "address": "강원도 원주시 중평길 59 (평원동)",
-    //       "title": "무궁화집",
-    //     }]);
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //   });
     return () => { }
   }, []);
 
+  useEffect(()=>{
+    setTimeout(() => {
+      setIndocator(true)
+    }, 3500);
+  },[filteredDataSource])
 
   const setLocation = async () => {
     let setLoc = "";
-    // let { status } = await Location.requestForegroundPermissionsAsync();
-    // let _error = '';
-    // if (status !== 'granted') { _error = '위치 권한을 허용해주세요.'; }
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') { setLocation(); }
 
-    // let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.BestForNavigation });
-    // const { latitude, longitude } = location;
-    // let geocode = await Location.reverseGeocodeAsync({ latitude, longitude })
-    // console.log(geocode);
-    // geocode[0].region == "서울특별시" ? setLoc = geocode[0].district : setLoc = geocode[0].region
-    setLoc = "세종특별자치시 조치원읍";
-    fetchUser(setLoc, setFilteredDataSource, setMasterDataSource);
+    let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.BestForNavigation });
+    const { latitude, longitude } = location.coords;
+    let geocode = await Location.reverseGeocodeAsync({ latitude, longitude })
+
+    console.log(geocode);
+    geocode[0].region == "서울특별시" ? setLoc = geocode[0].district : setLoc = geocode[0].region
+    storeList(setLoc, setFilteredDataSource, setMasterDataSource);
   }
-
 
 
   const _dsa = async () => {
@@ -144,9 +120,7 @@ const RestaurantList = () => {
     }, 1000);
   }
 
-  const renderItem = ({ index, item }) => (<Item key={index} title={item.title}
-    address={item.address}
-  />);
+  const renderItem = ({ index, item }) => (<Item key={index} title={item.title} address={item.address}/>);
 
   const searchFilterFunction = (text) => {
     // Check if searched text is not blank
@@ -171,6 +145,7 @@ const RestaurantList = () => {
     }
   };
 
+  const [indicator, setIndocator] = useState(false);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -188,12 +163,18 @@ const RestaurantList = () => {
           onChangeText={(text) => searchFilterFunction(text)}
           value={search}
           underlineColorAndroid="transparent"
-          placeholder="Search Here"
+          placeholder="식당이름 검색"
         />
       </View>
 
-      <View>
+      {!indicator && <View style={{backgroundColor:'#ffffff', position:'absolute', width:'100%', height:'100%',zIndex:1, alignItems:'center', justifyContent:'center'}}>
+                <ActivityIndicator animating={true} size={100} color={'#0085ea'} style={{marginBottom:100}}/>
+                <Text style={{fontSize:20, fontWeight:'bold'}}>식당정보 준비중...</Text>
+            </View>}
+
+      <View style={{flex:1, padding:10}}>
         <FlatList
+          showsVerticalScrollIndicator={false}
           data={filteredDataSource}
           keyExtractor={(item, index) => index.toString()}
           ItemSeparatorComponent={menuSeparator}

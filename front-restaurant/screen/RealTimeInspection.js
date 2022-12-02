@@ -8,7 +8,7 @@ import * as MediaLibrary from 'expo-media-library';
 import { useNavigation } from '@react-navigation/native';
 import { sendVideo } from '../api';
 
-const question = ['식기를 촬영해주세요!', '주방 전체를 촬영해주세요!', '바닥을 촬영해주세요!'];
+const question = ['후라이펜을 촬영해주세요!', '식기를 촬영해주세요!', '바닥을 촬영해주세요!'];
 const RealTimeInspection = () => {
   let cameraRef = useRef();
   const [hasCameraPermission, setHasCameraPermission] = useState();
@@ -83,9 +83,12 @@ const RealTimeInspection = () => {
     let saveVideo = async () => {
       try {
         let res = await sendVideo(video);
-        if (res.success) {
+        console.log(res);
+        if (res.result == 'success') {
           setCount(prev => prev + 1);
           setVideo(undefined);
+        }else{
+          setVideo(undefined)
         }
       } catch {}
       // MediaLibrary.saveToLibraryAsync(video.uri).then(() => { setVideo(undefined);});
@@ -115,7 +118,7 @@ const RealTimeInspection = () => {
 
   return (
     <>
-      {!isRecording && <View style={{ position: 'absolute', top: 20, zIndex: 1, width: '100%', alignItems: 'center', backgroundColor: '#ffffff80' }}>
+      {!isRecording && <View style={{ position: 'absolute', top: '10%', zIndex: 1, width: '100%', alignItems: 'center', backgroundColor: '#ffffff80' }}>
         <Text style={{ fontWeight: 'bold', fontSize: 30 }}>{question[count]}</Text>
       </View>}
       <Camera style={styles.container} ref={cameraRef}>

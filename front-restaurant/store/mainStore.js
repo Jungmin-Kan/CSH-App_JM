@@ -26,7 +26,7 @@ const initialState = {
 	userInfo : {
 		id : '',
 		token : ''
-	}
+	},
 }
 
 //상태 값 변경을 위한 리듀서

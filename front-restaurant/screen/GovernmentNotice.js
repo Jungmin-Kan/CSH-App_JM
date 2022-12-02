@@ -50,13 +50,14 @@ const Item = ({ title, content, date, manager, ph, file }) => {
   const navigation = useNavigation();
   return (<Card>
     <Card.Content>
-      <View style={{ flexDirection: 'row' }}>
-      <Avatar.Image size={24} style={{backgroundColor:'#ffffff'}} source={{uri:'https://www.msit.go.kr/images/user/img_mi_symbol.png'}} />
+      <View style={{ flexDirection: 'row', marginBottom:10 }}>
+        <Avatar.Image size={24} style={{backgroundColor:'#ffffff'}} source={{uri:'https://www.msit.go.kr/images/user/img_mi_symbol.png'}} />
 
-        <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+        <View style={{ marginLeft:10,flex: 1, flexDirection: 'row', alignItems: 'center' }}>
           <Text style={{ fontSize: 15 }}>{title}</Text>
         </View>
       </View>
+
       <Paragraph numberOfLines={2}>{content}</Paragraph>
       <Paragraph>{'작성자 :'}{manager} {date}</Paragraph>
       <TouchableOpacity
