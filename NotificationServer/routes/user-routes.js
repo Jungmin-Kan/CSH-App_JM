@@ -13,12 +13,12 @@ router.use(express.json());
 
 /**
  * @description 계정 풀 
- * @type {Array.<object>}
+ * @type {Array<object>}
  */
 let savedPushTokensUser = [];
 /** 
  * @description 메시지 풀
- * @type {Array.<object>}
+ * @type {Array<object>}
  */
  let notifications = [];
 /**

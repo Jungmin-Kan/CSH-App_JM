@@ -1,42 +1,17 @@
 const TEST_ENDPOINT = `http://cshserver.ga:8000/`;
-const NOTIFICATION = `http://35.203.131.4:3001/Restaurant`;
+const NOTIFICATION = `http://35.197.47.43:3001/Restaurant`;
 
 export const SUCCESS = `success`;
 export const FAIL = `fail`;
 
-export const getInventory = (value) => {
-  return fetch(`${TEST_ENDPOINT}get_inventory`, {
-    method: 'GET',
-    body: JSON.stringify(value),
-  }).then((response) => response.json());
-}
 
-/**
- * **POST** /enroll_inventory  (재고 등록 , 직접 등록 + 바코드 등록을 포함함)
- * @param {*} value 
- * @returns 
- */
-export const enrollInventory = (value) => {
-  console.log(JSON.stringify(value))
-  return fetch(`${TEST_ENDPOINT}enroll_inventory`, {
-    method: 'POST',
-    mode: 'cors', // no-cors, *cors, same-origin
-    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(value),
-  }).then((response) => response.json());
-}
-
-
-
+/** Notification */
 /**
  * 푸쉬알링용 토큰 등록
  * @param {*} token 
  * @returns {Promise}
  */
-export const registerToken = (token, id) => {
+ export const registerToken = (token, id) => {
   return fetch(NOTIFICATION, {
     method: 'POST',
     headers: {
@@ -78,6 +53,34 @@ export const restPush = () => {
     .then((response) => response.json())
     .then((data) => data);
 }
+
+/** API */
+export const getInventory = (value) => {
+  return fetch(`${TEST_ENDPOINT}get_inventory`, {
+    method: 'GET',
+    body: JSON.stringify(value),
+  }).then((response) => response.json());
+}
+
+/**
+ * **POST** /enroll_inventory  (재고 등록 , 직접 등록 + 바코드 등록을 포함함)
+ * @param {*} value 
+ * @returns 
+ */
+export const enrollInventory = (value) => {
+  console.log(JSON.stringify(value))
+  return fetch(`${TEST_ENDPOINT}enroll_inventory`, {
+    method: 'POST',
+    mode: 'cors', // no-cors, *cors, same-origin
+    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(value),
+  }).then((response) => response.json());
+}
+
+
 
 
 /**

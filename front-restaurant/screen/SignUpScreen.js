@@ -50,8 +50,8 @@ export default class SignUpScreen extends Component {
       idToken:''
     }
   }
-  componentDidMount() {
-  }
+  componentDidMount() { }
+
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (this.state.bnum !== prevState.bnum) {
       console.log(this.state.bnum)
@@ -235,10 +235,6 @@ export default class SignUpScreen extends Component {
           </TouchableOpacity>
         </View>}
         {(this.state.idToken ? true : false) && <Text>핸드폰인증 완료</Text> }
-
-        {/* <TouchableOpacity style={[styles.buttonContainer, styles.signupButton]} onPress={()=>this.phoneAuth()}>
-            <Text style={styles.signUpText}>전화인증 코드받기</Text>
-          </TouchableOpacity> */}
 
         <FirebaseRecaptchaVerifierModal
           ref={this.recaptchaVerifier}

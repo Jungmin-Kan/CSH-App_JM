@@ -107,6 +107,9 @@ const RestaurantList = () => {
 
     console.log(geocode);
     geocode[0].region == "서울특별시" ? setLoc = geocode[0].district : setLoc = geocode[0].region
+    console.log(`==============================`);
+    console.log(setLoc);
+    setLoc = "원주시";
     storeList(setLoc, setFilteredDataSource, setMasterDataSource);
   }
 
@@ -167,10 +170,10 @@ const RestaurantList = () => {
         />
       </View>
 
-      {!indicator && <View style={{backgroundColor:'#ffffff', position:'absolute', width:'100%', height:'100%',zIndex:1, alignItems:'center', justifyContent:'center'}}>
+      {/* {!indicator && <View style={{backgroundColor:'red', position:'absolute', width:'100%', height:'100%',zIndex:1, alignItems:'center', justifyContent:'center'}}>
                 <ActivityIndicator animating={true} size={100} color={'#0085ea'} style={{marginBottom:100}}/>
                 <Text style={{fontSize:20, fontWeight:'bold'}}>식당정보 준비중...</Text>
-            </View>}
+            </View>} */}
 
       <View style={{flex:1, padding:10}}>
         <FlatList

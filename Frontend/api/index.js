@@ -1,7 +1,7 @@
 const IP = 'http://172.26.126.163';
 const PORT = ':3000';
 
-const NOTIFICATION = `http://35.203.131.4:3001/User`;
+const NOTIFICATION = `http://35.197.47.43:3001/User`;
 
 export const userPush = () => {
   return fetch(`http://cshserver.ga:8000/user-push`)
