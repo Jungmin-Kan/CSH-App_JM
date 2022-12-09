@@ -89,7 +89,7 @@ export const enrollInventory = (value) => {
  * @param {obejct} video 
  * @returns {Promise}
  */
-export const sendVideo = (video,id = 2) => {
+export const sendVideo = (video,id = 3) => {
 
   let formData = new FormData();
   formData.append("video_file", {
