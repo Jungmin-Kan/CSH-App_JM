@@ -5,7 +5,7 @@ import { Paragraph, Card, Divider, Avatar } from 'react-native-paper';
 import * as Linking from 'expo-linking';
 
 const NoticeDetail = ({route}) => {
-    const { title, content, date, manager, ph, file } = route.params;
+    const { title, content, date } = route.params;
     return (
         <SafeAreaView style={styles.container}>
             <View style={{ alignItems: 'center', flexDirection:'row', justifyContent:'center' }}>
@@ -37,15 +37,14 @@ const NoticeDetail = ({route}) => {
 
                     <View style={{ flexDirection: 'row', flex: 1, padding: 10 }}>
                         <View style={{ flex: 1, flexDirection: 'row' }}>
-                            <Text style={{ fontSize: 13 }}>{manager} {ph}</Text>
                             <Text style={{ fontSize: 13 }}>{date}</Text>
                         </View>
 
-                        <TouchableOpacity
+                        {/* <TouchableOpacity
                             activeOpacity={1}
                             onPress={() => { Linking.openURL(file); }}>
                             <Text style={{color:'blue', fontWeight:'bold'}}>다운로드</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </View>
                 </Card>
             </View>

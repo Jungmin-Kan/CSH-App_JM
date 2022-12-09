@@ -47,7 +47,7 @@ const Item = memo(({ title, address }) => {
       var x = data.split('|');
       long = x[3];
       lat = x[4];
-      setDestination(`nmap://route/car?slat=${latitude}&slng=${longitude}&sname=내위치&dlat=${lat}&dlng=${long}&dname=${address}&appname=com.example.myapp`)
+      setDestination(`nmap://route/car?slat=${'37.27485'}&slng=${'127.90762'}&sname=내위치&dlat=${lat}&dlng=${long}&dname=${address}&appname=com.example.myapp`)
       setDestinationT(`tmap://route?goalx=${long}&goaly=${lat}&goalname=${address}"`)
     });
   };

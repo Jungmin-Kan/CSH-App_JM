@@ -82,7 +82,7 @@ export default class SignUpScreen extends Component {
       } else {
         alert('회원가입 실패. 정보가 올바르게 입력, 인증되었는지 확인해주세요.');
       }
-    } catch { }
+    } catch (e){ }
   }
 
   /**
@@ -218,6 +218,8 @@ export default class SignUpScreen extends Component {
         {/* 전화번호 입력하는 영역 */}
         {!this.state.doPhoneAuth && <View style={styles.inputContainer}>
           <TextInput style={styles.inputs}
+            editable={!this.state.idToken ? true : false}
+            selectTextOnFocus={!this.state.idToken ? true : false} 
             placeholder="01063980790"
             value={this.state.phoneNum}
             underlineColorAndroid='transparent'

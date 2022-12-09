@@ -101,24 +101,24 @@ class LoginView extends Component {
   onClickListener = (viewId) => { Alert.alert("Alert", "아직 준비중입니다" + viewId) }
 
   _resLogin = async () => {
-    this.props.navigation.navigate('RestaurantMainScreen');
-    registerForPushNotificationsAsync(this.state.bnum).then(token => this.setState({ setExpoPushToken: token }));
-    // console.log('_resLogin');
-    // console.log(this.state.bnum, this.state.password);
-    // try {
-    //   let res = await restLogin({
-    //     bz_num: this.state.bnum,
-    //     password: this.state.password
-    //   });
-    //   console.log(res);
-    //   if (res.result == SUCCESS) {
-    //     registerForPushNotificationsAsync(this.state.bnum).then(token => this.setState({ setExpoPushToken: token }));
-    //     this.props.navigation.navigate('RestaurantMainScreen');
-    //     this.setPushStatus(this.state.bnum, this.state.password);
-    //     return;
-    //   }
-    //   this.setState({ bnum: '', password: '' })
-    // } catch { }
+    // this.props.navigation.navigate('RestaurantMainScreen');
+    // registerForPushNotificationsAsync(this.state.bnum).then(token => this.setState({ setExpoPushToken: token }));
+    console.log('_resLogin');
+    console.log(this.state.bnum, this.state.password);
+    try {
+      let res = await restLogin({
+        bz_num: this.state.bnum,
+        password: this.state.password
+      });
+      console.log(res);
+      if (res.result == SUCCESS) {
+        registerForPushNotificationsAsync(this.state.bnum).then(token => this.setState({ setExpoPushToken: token }));
+        this.props.navigation.navigate('RestaurantMainScreen');
+        this.setPushStatus(this.state.bnum, this.state.password);
+        return;
+      }
+      this.setState({ bnum: '', password: '' })
+    } catch { }
   }
 
   setPushStatus = async (businessNumber, passWord) => {
